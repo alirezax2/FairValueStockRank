@@ -31,7 +31,7 @@ if 'Price' in DFmerge_tipranks_gurufocus.columns and 'GFValue' in DFmerge_tipran
   DFmerge_tipranks_gurufocus['GFValuepercent'] = 100* ( DFmerge_tipranks_gurufocus['GFValue'] - DFmerge_tipranks_gurufocus['Price']) / DFmerge_tipranks_gurufocus['Price']
 
 
-ticker = pn.widgets.AutocompleteInput(name='Ticker', options=list(DFmerge_tipranks_gurufocus.Ticker) , placeholder='Write Ticker here همین جا')
+ticker = pn.widgets.AutocompleteInput(name='Ticker', options=list(DFmerge_tipranks_gurufocus.Ticker) , placeholder='Write Ticker here همین جا',value='ALL', restrict=False)
 # ticker.value = "AAPL"
 
 SmartScore = pn.widgets.EditableRangeSlider(name='SmartScore', start=0, end=10, value=(9, 10), step=1)
@@ -46,12 +46,10 @@ alert = pn.pane.Alert(f'{DFmerge_tipranks_gurufocus.shape} ', alert_type="succes
 
 
 def get_DF(DF,ticker,SmartScore,GFValuepercent ,Sector):
-  if ticker:
-    DF = DF.query("Ticker == @ticker")
-  # DF = DF.query("SmartScore>=@SmartScore[0] & SmartScore <= @SmartScore[1]")
-  # DF = DF.query('GFValuepercent>=@GFValuepercent')
-  # DF = DF.query('Sector in @ Sector')
-  return pn.widgets.Tabulator( DF.query("SmartScore>=@SmartScore[0] & SmartScore <= @SmartScore[1] & GFValuepercent>=@GFValuepercent & Sector in @ Sector" ), name='DataFrame' , height=500, widths=200 ,)
+  if ticker and ticker!="ALL":
+    return pn.widgets.Tabulator(DF.query("Ticker == @ticker"), name='DataFrame' , height=500, widths=200 ,)
+  else:
+    return pn.widgets.Tabulator( DF.query("SmartScore>=@SmartScore[0] & SmartScore <= @SmartScore[1] & GFValuepercent>=@GFValuepercent & Sector in @ Sector" ), name='DataFrame' , height=500, widths=200 ,)
 
 def get_alert(DF,ticker,SmartScore,GFValuepercent ,Sector):
   if ticker:
@@ -60,7 +58,6 @@ def get_alert(DF,ticker,SmartScore,GFValuepercent ,Sector):
     DF2 = DF
   DF = DF.query("SmartScore>=@SmartScore[0] & SmartScore <= @SmartScore[1]")
   return pn.pane.Alert(f'{DF.shape} ', alert_type="success")
-
 
 pn.extension('tabulator')
 bound_plot = pn.bind(get_DF, DF=DFmerge_tipranks_gurufocus,ticker=ticker,SmartScore=SmartScore,GFValuepercent=GFValuepercent ,Sector=Sector)
