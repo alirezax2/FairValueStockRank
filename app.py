@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
-from dateitime import datetime
+from datetime import datetime
 
 import hvplot as hv
 import holoviews as hvs
