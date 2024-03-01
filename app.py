@@ -47,7 +47,7 @@ cash_icon = """
   <path d="M17 9v-2a2 2 0 0 0 -2 -2h-10a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h2" />
 </svg>
 """
-download_button = pn.widgets.FileDownload(icon=cash_icon, button_type='success', icon_size='2em', file='watchlist.txt', label="Download Watchlist", filename="watchlist.txt", callback=download_data)
+download_button = pn.widgets.FileDownload(icon=cash_icon, button_type='success', icon_size='2em', file='watchlist.txt', label="Download Watchlist", filename="watchlist.txt", callback=get_table_download_link)
 
 def export_watchlist(df):
     return df['Ticker'].str.cat(sep=', ')
