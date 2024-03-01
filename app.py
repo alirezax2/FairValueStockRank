@@ -39,18 +39,8 @@ Industry = pn.widgets.CheckBoxGroup( name='Select Industry', value=list(set(DFme
 Sector = pn.widgets.CheckBoxGroup( name='Select Sector', value=list(set(DFmerge_tipranks_gurufocus.Sector)), options=list(set(DFmerge_tipranks_gurufocus.Sector)), inline=False)
 GFValuepercent = pn.widgets.FloatSlider(name='GFValuepercent', start=-100, end=1000, step=1, value=30.0)
 
-cash_icon = """
-<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-cash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-  <path d="M7 9m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z" />
-  <path d="M14 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-  <path d="M17 9v-2a2 2 0 0 0 -2 -2h-10a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h2" />
-</svg>
-"""
-download_button = pn.widgets.FileDownload(icon=cash_icon, button_type='success', icon_size='2em', file='watchlist.txt', label="Download Watchlist", filename="watchlist.txt")
 
 def get_DF(DF,ticker,SmartScore,GFValuepercent ,Sector):
-  with open('watchlist.txt', 'w') as file: file.write(DF['Ticker'].str.cat(sep=', '))
   if ticker and ticker!="ALL":
     return pn.widgets.Tabulator(DF.query("Ticker == @ticker"), name='DataFrame' , height=800, widths=200 ,)
   else:
@@ -60,4 +50,4 @@ def get_DF(DF,ticker,SmartScore,GFValuepercent ,Sector):
 pn.extension('tabulator')
 bound_plot = pn.bind(get_DF, DF=DFmerge_tipranks_gurufocus,ticker=ticker,SmartScore=SmartScore,GFValuepercent=GFValuepercent ,Sector=Sector)
 
-pn.Column(pn.Row(pn.Column(ticker,SmartScore,GFValuepercent ,Sector),bound_plot),download_button).servable(title="Fair Value Ranking - Merged Gurufocus & Tiprank")
+pn.Column(pn.Row(pn.Column(ticker,SmartScore,GFValuepercent ,Sector),bound_plot)).servable(title="Fair Value Ranking - Merged Gurufocus & Tiprank")
