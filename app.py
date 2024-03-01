@@ -62,11 +62,11 @@ def get_table_download_link(df):
 
 
 def get_DF(DF,ticker,SmartScore,GFValuepercent ,Sector):
-    DF.to_csv('watchlist.txt')
+  DF.to_csv('watchlist.txt')
   if ticker and ticker!="ALL":
-    return pn.widgets.Tabulator(DF.query("Ticker == @ticker"), name='DataFrame' , height=500, widths=200 ,)
+    return pn.widgets.Tabulator(DF.query("Ticker == @ticker"), name='DataFrame' , height=800, widths=200 ,)
   else:
-    return pn.widgets.Tabulator( DF.query("SmartScore>=@SmartScore[0] & SmartScore <= @SmartScore[1] & GFValuepercent>=@GFValuepercent & Sector in @ Sector" ), name='DataFrame' , height=500, widths=200 ,)
+    return pn.widgets.Tabulator( DF.query("SmartScore>=@SmartScore[0] & SmartScore <= @SmartScore[1] & GFValuepercent>=@GFValuepercent & Sector in @ Sector" ), name='DataFrame' , height=800, widths=200 ,)
 
 
 pn.extension('tabulator')
