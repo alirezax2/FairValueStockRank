@@ -17,7 +17,7 @@ daily_gurufocus_DF = pd.read_csv(daily_gurufocus_csvfile)
 
 #Reading tiprank from local crawling pipeline; Need to update github action to merge gurufocus daily with weekly tiprank
 monthly_tiprank_csvfile = f"https://raw.githubusercontent.com/alirezax2/GurusFocusCrawl/main/tipranks/tipranks_2024-02-28.csv"
-monthly_tiprank_DF = pd.read_csv(monthly_tiprank_csvfile)
+monthly_tiprank_DF = pd.read_csv(monthly_tiprank_csvfile)[['Ticker','SmartScore','Capitalization','Sector','Industry']]
 
 #Reading finviz from github action pipeline another repository(public)
 daily_finviz_csvfile = f"https://raw.githubusercontent.com/alirezax2/FinVizCrawl/main/finviz/FinViz_{current_datetime}.csv"
@@ -25,7 +25,7 @@ daily_finviz_DF = pd.read_csv(daily_finviz_csvfile)
 daily_finviz_DF['FinVizPrice']  = pd.to_numeric(daily_finviz_DF['Price'], errors='coerce').fillna(0).astype(float)
 daily_finviz_DF['FinVizTarget']  = pd.to_numeric(daily_finviz_DF['Target Price'], errors='coerce').fillna(0).astype(float)
 daily_finviz_DF['FinVizTargetpercent'] = (100*(daily_finviz_DF['FinVizTarget']-daily_finviz_DF['FinVizPrice'])/daily_finviz_DF['FinVizPrice']).round(2)
-daily_finviz_DF = daily_finviz_DF[['Ticker','FinVizTarget','FinVizTargetpercent']]
+daily_finviz_DF = daily_finviz_DF[['Ticker','Price','FinVizTarget','FinVizTargetpercent']]
 
 
 #Merging tipranks with Gurufocus
