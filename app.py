@@ -17,7 +17,7 @@ daily_gurufocus_DF = pd.read_csv(daily_gurufocus_csvfile)
 
 #Reading tiprank from local crawling pipeline; Need to update github action to merge gurufocus daily with weekly tiprank
 monthly_tiprank_csvfile = f"https://raw.githubusercontent.com/alirezax2/GurusFocusCrawl/main/tipranks/tipranks_2024-02-28.csv"
-monthly_tiprank_DF = pd.read_csv(monthly_tiprank_csvfile)[['Ticker','SmartScore','Capitalization','Sector','Industry']]
+monthly_tiprank_DF = pd.read_csv(monthly_tiprank_csvfile)[['Ticker','SmartScore','Market Capitalization','Sector','Industry']]
 
 #Reading finviz from github action pipeline another repository(public)
 daily_finviz_csvfile = f"https://raw.githubusercontent.com/alirezax2/FinVizCrawl/main/finviz/FinViz_{current_datetime}.csv"
