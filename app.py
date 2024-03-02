@@ -55,7 +55,7 @@ def get_DF(DF,ticker,SmartScore,GFValuepercent, FinVizpercent, Sector,MarketCap)
   if ticker and ticker!="ALL":
     return pn.widgets.Tabulator(DF.query("Ticker == @ticker"), height=800, widths=200, show_index=False)
   else:
-    return pn.widgets.Tabulator( DF.query("SmartScore>=@SmartScore[0] & SmartScore <= @SmartScore[1] & GFValuepercent>=@GFValuepercent & FinVizpercent>=@FinVizpercent & Sector in @ Sector & MarketCap>@MarketCap"), height=800, widths=200, show_index=False)
+    return pn.widgets.Tabulator( DF.query("SmartScore>=@SmartScore[0] & SmartScore <= @SmartScore[1] & GFValuepercent>=@GFValuepercent & Sector in @ Sector & MarketCap>@MarketCap"), height=800, widths=200, show_index=False)
 
 pn.extension('tabulator')
 bound_plot = pn.bind(get_DF, DF=DFmerge_tipranks_gurufocus,ticker=ticker,SmartScore=SmartScore,GFValuepercent=GFValuepercent, FinVizpercent=FinVizpercent, Sector=Sector ,MarketCap=MarketCap)
