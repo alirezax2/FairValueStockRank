@@ -19,9 +19,20 @@ daily_gurufocus_DF = pd.read_csv(daily_gurufocus_csvfile)
 monthly_tiprank_csvfile = f"https://raw.githubusercontent.com/alirezax2/GurusFocusCrawl/main/tipranks/tipranks_2024-02-28.csv"
 monthly_tiprank_DF = pd.read_csv(monthly_tiprank_csvfile)
 
+#Reading finviz from github action pipeline another repository(public)
+daily_finviz_csvfile = f"https://raw.githubusercontent.com/alirezax2/FinVizCrawl/main/finviz/FinViz_{current_datetime}.csv"
+daily_finviz_DF = pd.read_csv(daily_finviz_csvfile)
+daily_finviz_DF['FinVizTargetpercent'] = 100*(daily_finviz_DF['Target Price']-daily_finviz_DF['Price'])/daily_finviz_DF['Price']
+daily_finviz_DF['FinVizTarget'] = daily_finviz_DF['Target Price']
+daily_finviz_DF = daily_finviz_DF[['Ticker','Target Price','FinVizTargetpercent']]
+
+
 #Merging tipranks with Gurufocus
 DFgurufocus = daily_gurufocus_DF[['Ticker' , 'GFValue']] # , 'GFValuediff']]
 DFmerge_tipranks_gurufocus = DFgurufocus.merge(monthly_tiprank_DF)
+
+#Merging Finviz with Merged last one
+DFmerge_tipranks_gurufocus = DFmerge_tipranks_gurufocus.merge(daily_finviz_DF)
 
 if 'Price' in DFmerge_tipranks_gurufocus.columns and 'GFValue' in DFmerge_tipranks_gurufocus.columns:
   DFmerge_tipranks_gurufocus['GFValuepercent'] = 100* ( DFmerge_tipranks_gurufocus['GFValue'] - DFmerge_tipranks_gurufocus['Price']) / DFmerge_tipranks_gurufocus['Price']
