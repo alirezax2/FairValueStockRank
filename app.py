@@ -24,7 +24,7 @@ daily_finviz_csvfile = f"https://raw.githubusercontent.com/alirezax2/FinVizCrawl
 daily_finviz_DF = pd.read_csv(daily_finviz_csvfile)
 daily_finviz_DF['FinVizPrice']  = pd.to_numeric(daily_finviz_DF['Price'], errors='coerce').fillna(0).astype(float)
 daily_finviz_DF['FinVizTarget']  = pd.to_numeric(daily_finviz_DF['Target Price'], errors='coerce').fillna(0).astype(float)
-daily_finviz_DF['FinVizTargetpercent'] = 100*(daily_finviz_DF['FinVizTarget']-daily_finviz_DF['FinVizPrice'])/daily_finviz_DF['FinVizPrice']
+daily_finviz_DF['FinVizTargetpercent'] = (100*(daily_finviz_DF['FinVizTarget']-daily_finviz_DF['FinVizPrice'])/daily_finviz_DF['FinVizPrice']).round(2)
 daily_finviz_DF = daily_finviz_DF[['Ticker','FinVizTarget','FinVizTargetpercent']]
 
 
@@ -48,16 +48,16 @@ SmartScore = pn.widgets.EditableRangeSlider(name='Smart Score', start=0, end=10,
 Industry = pn.widgets.CheckBoxGroup( name='Select Industry', value=list(set(DFmerge_tipranks_gurufocus.Industry)), options=list(set(DFmerge_tipranks_gurufocus.Industry)), inline=True)
 Sector = pn.widgets.CheckBoxGroup( name='Select Sector', value=list(set(DFmerge_tipranks_gurufocus.Sector)), options=list(set(DFmerge_tipranks_gurufocus.Sector)), inline=False)
 GFValuepercent = pn.widgets.FloatSlider(name='GF Value %', start=-100, end=1000, step=1, value=30.0)
-FinVizpercent = pn.widgets.FloatSlider(name='FinViz Target %', start=-100, end=1000, step=1, value=30.0)
+FinVizTargetpercent = pn.widgets.FloatSlider(name='FinViz Target %', start=-100, end=1000, step=1, value=30.0)
 MarketCap = pn.widgets.FloatSlider(name='Market Capital (B$)', start=0, end=4000, step=1, value=1)
 
-def get_DF(DF,ticker,SmartScore,GFValuepercent, FinVizpercent, Sector,MarketCap):
+def get_DF(DF,ticker,SmartScore,GFValuepercent, FinVizTargetpercent, Sector,MarketCap):
   if ticker and ticker!="ALL":
     return pn.widgets.Tabulator(DF.query("Ticker == @ticker"), height=800, widths=200, show_index=False)
   else:
-    return pn.widgets.Tabulator( DF.query("SmartScore>=@SmartScore[0] & SmartScore <= @SmartScore[1] & GFValuepercent>=@GFValuepercent & Sector in @ Sector & MarketCap>@MarketCap"), height=800, widths=200, show_index=False)
+    return pn.widgets.Tabulator( DF.query("SmartScore>=@SmartScore[0] & SmartScore <= @SmartScore[1] & GFValuepercent>=@GFValuepercent & FinVizTargetpercent>@FinVizTargetpercent & Sector in @Sector & MarketCap>@MarketCap"), height=800, widths=200, show_index=False)
 
 pn.extension('tabulator')
-bound_plot = pn.bind(get_DF, DF=DFmerge_tipranks_gurufocus,ticker=ticker,SmartScore=SmartScore,GFValuepercent=GFValuepercent, FinVizpercent=FinVizpercent, Sector=Sector ,MarketCap=MarketCap)
+bound_plot = pn.bind(get_DF, DF=DFmerge_tipranks_gurufocus,ticker=ticker,SmartScore=SmartScore,GFValuepercent=GFValuepercent, FinVizTargetpercent=FinVizTargetpercent, Sector=Sector ,MarketCap=MarketCap)
 
-pn.Column(pn.Row(pn.Column(ticker,SmartScore,GFValuepercent, FinVizpercent, MarketCap, Sector),bound_plot)).servable(title="Fair Value Ranking - Merged Gurufocus & Tiprank")
+pn.Column(pn.Row(pn.Column(ticker,SmartScore,GFValuepercent, FinVizTargetpercent, MarketCap, Sector),bound_plot)).servable(title="Fair Value Ranking - Merged Gurufocus & Tiprank")
