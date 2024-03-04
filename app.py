@@ -41,6 +41,7 @@ if 'Price' in DFmerge_tipranks_gurufocus.columns and 'GFValue' in DFmerge_tipran
   DFmerge_tipranks_gurufocus['Market Capitalization'] = DFmerge_tipranks_gurufocus['Market Capitalization'] / 1e9
   DFmerge_tipranks_gurufocus['MarketCap'] = DFmerge_tipranks_gurufocus['Market Capitalization'].round(1)
   DFmerge_tipranks_gurufocus = DFmerge_tipranks_gurufocus.drop(columns=['Market Capitalization'])
+  DFmerge_tipranks_gurufocus = DFmerge_tipranks_gurufocus[['Ticker', 'Sector', 'Industry' , 'MarketCap' , 'SmartScore', 'Price' , 'GFValue' , 'GFValuepercent' , 'FinVizTarget','FinVizTargetpercent']]
 
 #widget
 ticker = pn.widgets.AutocompleteInput(name='Ticker', options=list(DFmerge_tipranks_gurufocus.Ticker) , placeholder='Write Ticker here همین جا',value='ALL', restrict=False)
