@@ -6,7 +6,7 @@ from datetime import datetime
 import hvplot as hv
 import holoviews as hvs
 import panel as pn
-import hvplot.pandas
+import hvplot.pandas as pd
 
 pn.extension('bokeh', template='bootstrap')
 
