@@ -2,22 +2,23 @@ import pandas as pd
 import numpy as np
 import os
 from datetime import datetime
+from datetime import timedelta
 
 import hvplot as hv
 import holoviews as hvs
 import panel as pn
 import hvplot.pandas
 
+import yfinance as yf
+from finvizfinance.quote import finvizfinance
+
 pn.extension('bokeh', template='bootstrap')
 
-
 def _extract_raw_data(ticker):
-  import yfinance as yf
   df = yf.Ticker(ticker)
   return df.history(period="6mo", interval="1d").reset_index()
 
 def _transform_data(raw_data: pd.DataFrame):
-  from datetime import timedelta
   data = raw_data[["Date", "Open", "High", "Low", "Close", "Volume"]].copy(deep=True).rename(columns={
       "Date": "time",
       "Open": "open",
@@ -87,9 +88,12 @@ MarketCap = pn.widgets.FloatSlider(name='Market Capital (B$)', start=0, end=4000
 
 def get_DF(DF,ticker,SmartScore,GFValuepercent, FinVizTargetpercent, Sector,MarketCap):
   if ticker and ticker!="ALL":
-    table1 = pn.widgets.Tabulator(DF.query("Ticker == @ticker"), height=800, widths=200, show_index=False)
+    stock = finvizfinance(ticker)
+    url_of_image = stock.ticker_charts()
+    image_panel = pn.panel(url_of_image) #, width=400, height=400)
+    table1 = pn.widgets.Tabulator(DF.query("Ticker == @ticker"), height=200, widths=200, show_index=False)
     chart1 = make_candle_stick(ticker)
-    return pn.Column(table1,chart1)
+    return pn.Column(table1,chart1,image_panel)
   else:
     return pn.widgets.Tabulator( DF.query("SmartScore>=@SmartScore[0] & SmartScore <= @SmartScore[1] & GFValuepercent>=@GFValuepercent & FinVizTargetpercent>@FinVizTargetpercent & Sector in @Sector & MarketCap>@MarketCap"), height=800, widths=200, show_index=False)
 
