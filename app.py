@@ -90,6 +90,7 @@ def get_DF(DF,ticker,SmartScore,GFValuepercent, FinVizTargetpercent, Sector,Mark
   if ticker and ticker!="ALL":
     stock = finvizfinance(ticker)
     url_of_image = stock.ticker_charts()
+    print(url_of_image)
     image_panel = pn.pane.Image(url_of_image) #, width=400, height=400)
     table1 = pn.widgets.Tabulator(DF.query("Ticker == @ticker"), height=200, widths=200, show_index=False)
     chart1 = make_candle_stick(ticker)
