@@ -3,4 +3,3 @@ hvplot
 holoviews
 bokeh
 yfinance
-finvizfinance

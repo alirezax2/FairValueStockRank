@@ -10,7 +10,6 @@ import panel as pn
 import hvplot.pandas
 
 import yfinance as yf
-from finvizfinance.quote import finvizfinance
 
 pn.extension('bokeh', template='bootstrap')
 
@@ -88,13 +87,9 @@ MarketCap = pn.widgets.FloatSlider(name='Market Capital (B$)', start=0, end=4000
 
 def get_DF(DF,ticker,SmartScore,GFValuepercent, FinVizTargetpercent, Sector,MarketCap):
   if ticker and ticker!="ALL":
-    stock = finvizfinance(ticker)
-    url_of_image = stock.ticker_charts()
-    print(url_of_image)
-    image_panel = pn.pane.Image(url_of_image) #, width=400, height=400)
     table1 = pn.widgets.Tabulator(DF.query("Ticker == @ticker"), height=200, widths=200, show_index=False)
     chart1 = make_candle_stick(ticker)
-    return pn.Column(table1,chart1,image_panel)
+    return pn.Column(table1,chart1)
   else:
     return pn.widgets.Tabulator( DF.query("SmartScore>=@SmartScore[0] & SmartScore <= @SmartScore[1] & GFValuepercent>=@GFValuepercent & FinVizTargetpercent>@FinVizTargetpercent & Sector in @Sector & MarketCap>@MarketCap"), height=800, widths=200, show_index=False)
 
