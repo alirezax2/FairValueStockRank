@@ -36,9 +36,9 @@ def make_candle_stick(ticker):
     raw_data = _extract_raw_data(ticker = ticker)
     data = _transform_data(raw_data=raw_data)
     _delta = np.median(np.diff(data.time))
-    candlestick = hv.Segments(data, kdims=['time', 'low', 'time', 'high']) * hv.Rectangles(data, kdims=['time_start','open', 'time_end', 'close'], vdims=['positive'])
+    candlestick = hvs.Segments(data, kdims=['time', 'low', 'time', 'high']) * hvs.Rectangles(data, kdims=['time_start','open', 'time_end', 'close'], vdims=['positive'])
     candlestick = candlestick.redim.label(Low='Values')
-    candlechart = pn.Column(candlestick.opts(hv.opts.Rectangles(color='positive', cmap=['red', 'green'], responsive=True), hv.opts.Segments(color='black', height=400, responsive=True , show_grid=True)) , 
+    candlechart = pn.Column(candlestick.opts(hvs.opts.Rectangles(color='positive', cmap=['red', 'green'], responsive=True), hvs.opts.Segments(color='black', height=400, responsive=True , show_grid=True)) , 
                      data.hvplot(x="time", y="volume", kind="line", responsive=True, height=200).opts( show_grid=True) )
                     #  data.hvplot(y="volume", kind="bar", responsive=True, height=200) )
     return candlechart
