@@ -6,15 +6,15 @@ from datetime import datetime
 import hvplot as hv
 import holoviews as hvs
 import panel as pn
-import hvplot.pandas as pd
+import hvplot.pandas
 
 pn.extension('bokeh', template='bootstrap')
 
 
-def _extract_raw_data(ticker="MSFT", period="6mo", interval="1d"):
+def _extract_raw_data(ticker):
   import yfinance as yf
   df = yf.Ticker(ticker)
-  return df.history(period=period, interval=interval).reset_index()
+  return df.history(period="6mo", interval="1d").reset_index()
 
 def _transform_data(raw_data: pd.DataFrame):
   from datetime import timedelta
