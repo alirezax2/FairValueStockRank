@@ -43,10 +43,20 @@ def make_candle_stick(ticker):
                      data.hvplot(x="time", y="volume", kind="line", responsive=True, height=200).opts( show_grid=True) )
                     #  data.hvplot(y="volume", kind="bar", responsive=True, height=200) )
     return candlechart
+
 # Function to convert DataFrame to CSV
 def get_csv(df):
     sio = io.StringIO()
     df.to_csv(sio, index=False)
+    sio.seek(0)
+    return sio
+
+# Function to convert the 'Ticker' column to a comma-separated string in a text file
+def get_text(df):
+    tickers = df['Ticker'].tolist()
+    tickers_str = ','.join(tickers)
+    sio = io.StringIO()
+    sio.write(tickers_str)
     sio.seek(0)
     return sio
 
@@ -125,7 +135,15 @@ download_button_Filter = pn.widgets.FileDownload(
     label='Download your Filter'
 )
 
+download_button_watchlist = pn.widgets.FileDownload(
+    filename=f'watchlist_{current_datetime}.txt',
+    callback=pn.bind(get_text,pn.bind(get_DF_filter, DF=DFmerge_tipranks_gurufocus,ticker=ticker,SmartScore=SmartScore,GFValuepercent=GFValuepercent, FinVizTargetpercent=FinVizTargetpercent, Sector=Sector ,MarketCap=MarketCap) ),
+    button_type='success',
+    label='Download Watchlist'
+)
+
+
 pn.extension('tabulator')
 bound_plot = pn.bind(get_DF, DF=DFmerge_tipranks_gurufocus,ticker=ticker,SmartScore=SmartScore,GFValuepercent=GFValuepercent, FinVizTargetpercent=FinVizTargetpercent, Sector=Sector ,MarketCap=MarketCap)
 
-pn.Column(pn.Row(pn.Column(ticker,SmartScore,GFValuepercent, FinVizTargetpercent, MarketCap, Sector,download_button_GuruFocus,download_button_FinViz,download_button_Filter),bound_plot)).servable(title="Fair Value Ranking - Merged Gurufocus & Tiprank")
+pn.Column(pn.Row(pn.Column(ticker,SmartScore,GFValuepercent, FinVizTargetpercent, MarketCap, Sector,download_button_GuruFocus,download_button_FinViz,download_button_Filter,download_button_watchlist),bound_plot)).servable(title="Fair Value Ranking - Merged Gurufocus & Tiprank")
