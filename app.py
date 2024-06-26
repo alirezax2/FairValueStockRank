@@ -115,7 +115,17 @@ def get_DF(DF,ticker,SmartScore,GFValuepercent, FinVizTargetpercent, Sector,Mark
   else:
     return pn.widgets.Tabulator( DF.query("SmartScore>=@SmartScore[0] & SmartScore <= @SmartScore[1] & GFValuepercent>=@GFValuepercent & FinVizTargetpercent>@FinVizTargetpercent & Sector in @Sector & MarketCap>@MarketCap"), height=800, widths=200, show_index=False)
 
+def get_DF_filter(DF,ticker,SmartScore,GFValuepercent, FinVizTargetpercent, Sector,MarketCap):
+  return DF.query("SmartScore>=@SmartScore[0] & SmartScore <= @SmartScore[1] & GFValuepercent>=@GFValuepercent & FinVizTargetpercent>@FinVizTargetpercent & Sector in @Sector & MarketCap>@MarketCap")
+
+download_button_Filter = pn.widgets.FileDownload(
+    filename=f'Filter_{current_datetime}.csv',
+    callback=pn.bind(get_csv,pn.bind(get_DF_filter, DF=DFmerge_tipranks_gurufocus,ticker=ticker,SmartScore=SmartScore,GFValuepercent=GFValuepercent, FinVizTargetpercent=FinVizTargetpercent, Sector=Sector ,MarketCap=MarketCap) ),
+    button_type='danger',
+    label='Download your Filter'
+)
+
 pn.extension('tabulator')
 bound_plot = pn.bind(get_DF, DF=DFmerge_tipranks_gurufocus,ticker=ticker,SmartScore=SmartScore,GFValuepercent=GFValuepercent, FinVizTargetpercent=FinVizTargetpercent, Sector=Sector ,MarketCap=MarketCap)
 
-pn.Column(pn.Row(pn.Column(ticker,SmartScore,GFValuepercent, FinVizTargetpercent, MarketCap, Sector,download_button_GuruFocus,download_button_FinViz),bound_plot)).servable(title="Fair Value Ranking - Merged Gurufocus & Tiprank")
+pn.Column(pn.Row(pn.Column(ticker,SmartScore,GFValuepercent, FinVizTargetpercent, MarketCap, Sector,download_button_GuruFocus,download_button_FinViz,download_button_Filter),bound_plot)).servable(title="Fair Value Ranking - Merged Gurufocus & Tiprank")
