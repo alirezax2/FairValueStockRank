@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
+import io
 from datetime import datetime
 from datetime import timedelta
 
@@ -42,6 +43,12 @@ def make_candle_stick(ticker):
                      data.hvplot(x="time", y="volume", kind="line", responsive=True, height=200).opts( show_grid=True) )
                     #  data.hvplot(y="volume", kind="bar", responsive=True, height=200) )
     return candlechart
+# Function to convert DataFrame to CSV
+def get_csv(df):
+    sio = io.StringIO()
+    df.to_csv(sio, index=False)
+    sio.seek(0)
+    return sio
 
 #Rading gurufocus from github action pipeline
 current_datetime = datetime.now().strftime("%Y-%m-%d")    
@@ -85,6 +92,21 @@ GFValuepercent = pn.widgets.FloatSlider(name='GF Value %', start=-100, end=1000,
 FinVizTargetpercent = pn.widgets.FloatSlider(name='FinViz Target %', start=-100, end=1000, step=1, value=30.0)
 MarketCap = pn.widgets.FloatSlider(name='Market Capital (B$)', start=0, end=4000, step=1, value=1)
 
+# Create a file download link
+download_button_GuruFocus = pn.widgets.FileDownload(
+    filename=f'GuruFocus_merged_{current_datetime}.csv',
+    callback=pn.bind(get_csv,daily_gurufocus_DF),
+    button_type='primary',
+    label='Download GuruFocus'
+)
+
+download_button_FinViz = pn.widgets.FileDownload(
+    filename=f'FinViz_{current_datetime}.csv',
+    callback=pn.bind(get_csv,daily_finviz_DF),
+    button_type='primary',
+    label='Download FinViz'
+)
+
 def get_DF(DF,ticker,SmartScore,GFValuepercent, FinVizTargetpercent, Sector,MarketCap):
   if ticker and ticker!="ALL":
     table1 = pn.widgets.Tabulator(DF.query("Ticker == @ticker"), height=200, widths=200, show_index=False)
@@ -96,4 +118,4 @@ def get_DF(DF,ticker,SmartScore,GFValuepercent, FinVizTargetpercent, Sector,Mark
 pn.extension('tabulator')
 bound_plot = pn.bind(get_DF, DF=DFmerge_tipranks_gurufocus,ticker=ticker,SmartScore=SmartScore,GFValuepercent=GFValuepercent, FinVizTargetpercent=FinVizTargetpercent, Sector=Sector ,MarketCap=MarketCap)
 
-pn.Column(pn.Row(pn.Column(ticker,SmartScore,GFValuepercent, FinVizTargetpercent, MarketCap, Sector),bound_plot)).servable(title="Fair Value Ranking - Merged Gurufocus & Tiprank")
+pn.Column(pn.Row(pn.Column(ticker,SmartScore,GFValuepercent, FinVizTargetpercent, MarketCap, Sector,download_button_GuruFocus,download_button_FinViz),bound_plot)).servable(title="Fair Value Ranking - Merged Gurufocus & Tiprank")
